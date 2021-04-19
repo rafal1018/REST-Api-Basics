@@ -1,4 +1,4 @@
-package REST.Api.Basics;
+package REST.Api.Basics.hello;
 
 public class Greeting {
     private String msg;
