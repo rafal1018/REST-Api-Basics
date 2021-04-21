@@ -43,7 +43,6 @@ public class AppService {
                             ".png", getClass()));
         }
         else if ("managePermissions".equals(command.getAction())) {
-            // TODO: change permissions
             return ResponseEntity.ok().build();
         }
         else {
