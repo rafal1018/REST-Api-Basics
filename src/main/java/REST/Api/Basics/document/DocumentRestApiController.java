@@ -13,8 +13,14 @@ public class DocumentRestApiController {
 
     private Collection<Document> documents = new ArrayList<>();
 
+    @DeleteMapping("/{id}")
+    public void deleteDocument(@PathVariable("id") long number) {
+        documents.removeIf(document -> document.getNumber() == number);
+    }
+
     @PatchMapping("/{number}")
-    public void updateDocument(@PathVariable long number, @RequestBody Document newPartialDOcument) {
+    public void updateDocument(@PathVariable long number,
+                               @RequestBody Document newPartialDOcument) {
         findDocumentByNumber(number).ifPresent(document -> {
             if (newPartialDOcument.getTitle() != null) {
                 document.setTitle(newPartialDOcument.getTitle());
@@ -26,7 +32,8 @@ public class DocumentRestApiController {
     }
 
     @PostMapping("/{number}")
-    public void replaceDocument(@PathVariable long number, @RequestBody Document newDocument) {
+    public void replaceDocument(@PathVariable long number,
+                                @RequestBody Document newDocument) {
         findDocumentByNumber(number).ifPresent(document -> {
             document.setTitle(newDocument.getTitle());
             document.setTags(newDocument.getTags());
@@ -68,7 +75,8 @@ public class DocumentRestApiController {
 
     private Optional<Document> findDocumentByNumber(long number) {
         return documents.stream()
-                .filter(document -> document.getNumber() == number).findAny();
+                .filter(document -> document.getNumber() == number)
+                .findAny();
     }
 
 }
