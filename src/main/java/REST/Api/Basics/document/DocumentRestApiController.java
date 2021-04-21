@@ -6,12 +6,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/documents")
 public class DocumentRestApiController {
 
     private Collection<Document> documents = new ArrayList<>();
+
+    @GetMapping(params = "title")
+    public Stream<Document>findDocumentByTitle(@RequestParam("title") String title) {
+        return documents.stream().filter(document -> document.getTitle().equals(title));
+    }
 
     @DeleteMapping("/{id}")
     public void deleteDocument(@PathVariable("id") long number) {
