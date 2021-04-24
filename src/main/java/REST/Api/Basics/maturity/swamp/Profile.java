@@ -1,4 +1,4 @@
-package REST.Api.Basics.swamp;
+package REST.Api.Basics.maturity.swamp;
 
 import java.util.Objects;
 
