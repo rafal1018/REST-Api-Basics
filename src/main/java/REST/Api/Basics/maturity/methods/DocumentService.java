@@ -2,6 +2,8 @@ package REST.Api.Basics.maturity.methods;
 
 import REST.Api.Basics.document.Document;
 import REST.Api.Basics.maturity.util.DataFixtureUtils;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +16,15 @@ public class DocumentService {
             DataFixtureUtils.initDocuments();
 
     @GetMapping
-    public List<Document> getAllDocuments() {
-        return documents;
+    public ResponseEntity<List<Document>> getAllDocuments() {
+        return ResponseEntity.ok().header("Cache-control", "max-age" +
+                "=3600").body(documents);
+    }
+
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getAllTitles() {
+        return documents.stream().map(Document::getTitle).reduce((acc
+        , curr) -> String.join(",", acc, curr)).orElse("");
     }
 
     @PostMapping
