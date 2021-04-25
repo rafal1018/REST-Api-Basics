@@ -38,9 +38,13 @@ public class DocumentService {
     }
 
     @DeleteMapping("/{number}")
-    public void removeDocument(@PathVariable("number") long number) {
-        documents.removeIf(document -> document
-                .getNumber() == number);
+    public ResponseEntity<?> removeDocument(@PathVariable("number") long number) {
+        boolean anyElementRemoved = documents
+                .removeIf(document -> document.getNumber() == number);
+        if (anyElementRemoved) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
