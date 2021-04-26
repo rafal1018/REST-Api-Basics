@@ -16,12 +16,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController("documentServiceL3")
-@RequestMapping("/api/maturity/l3/documents")
+@RequestMapping(value = "/api/maturity/l3/documents", produces = "application"
+        + "/vnd.strefakursow.v2+hal+json")
 public class DocumentService {
     private List<Document> documents = DataFixtureUtils.initDocuments();
 
-    @GetMapping(produces = "application/json")
-    public List<Document> getAllDocumentWithoutLinks() {
+    @GetMapping(produces = "application/vnd.strefakursow.v1+json")
+    public List<Document> getAllDocumentsWithoutLinks() {
         return documents;
     }
 
