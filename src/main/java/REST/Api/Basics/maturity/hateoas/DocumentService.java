@@ -4,6 +4,7 @@ import REST.Api.Basics.document.Document;
 import REST.Api.Basics.maturity.util.DataFixtureUtils;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +20,19 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class DocumentService {
     private List<Document> documents = DataFixtureUtils.initDocuments();
 
+    @GetMapping(produces = "application/json")
+    public List<Document> getAllDocumentWithoutLinks() {
+        return documents;
+    }
+
     @GetMapping
     public Resources<Resource<Document>> getAllDocuments() {
         Resources<Resource<Document>> resources = new Resources<>(
                 documents.stream().map(this::mapToResource)
-                .collect(Collectors.toList()));
-                addDocsLink(resources, "self");
-                addFindDocsLink(resources, "docsByTitleAndNumber", null, null);
-                return resources;
+                        .collect(Collectors.toList()));
+        addDocsLink(resources, "self");
+        addFindDocsLink(resources, "docsByTitleAndNumber", null, null);
+        return resources;
     }
 
     @GetMapping("/{number}")
@@ -59,6 +65,23 @@ public class DocumentService {
         return documents.stream().map(Document::getTitle)
                 .reduce((acc, curr) -> String.join(",", acc, curr))
                 .orElse("");
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addDocument(@RequestBody Document document) {
+        documents.add(document);
+    }
+
+    @DeleteMapping("/{number}")
+    public ResponseEntity<?> removeDocument(
+            @PathVariable("number") long number) {
+        boolean anyElementRemoved = documents
+                .removeIf(document -> document.getNumber() == number);
+        if (anyElementRemoved) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     private Resource<Document> mapToResource(Document document) {
